@@ -16,10 +16,10 @@ def reset_screen(page_header: str) -> None:
 
 
 def get_valid_response(question: str, possible_answers, case_sensitive=False) -> str:
-    list_entry = "\t\t- "
+    list_entry_beginning = "\t\t- "
     print(f"\033[38;5;123m\033[1m{question}\n\033[0m\033[1m\tPossible choice:")
     for a in possible_answers:
-        print(list_entry + a)
+        print(list_entry_beginning + a)
     print(f"\033[0mAnswer is {'' if case_sensitive else 'not '}case sensitive.")
     while True:
         response_string = input("Your answer: ")
@@ -71,7 +71,7 @@ def get_int_input(prompt: str) -> float:
 class UniqueDrawFromList:
     def __init__(self, initial_list: list):
         self._list = initial_list.copy()
-        self._initial_list_backup_ref = initial_list
+        self.__original_list_backup_ref = initial_list
 
     def draw(self) -> object:
         list_size = len(self._list)
@@ -82,4 +82,4 @@ class UniqueDrawFromList:
         return element
 
     def reset(self):
-        self._list = self._initial_list_backup_ref.copy()
+        self._list = self.__original_list_backup_ref.copy()
