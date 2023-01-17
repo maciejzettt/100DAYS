@@ -1,5 +1,6 @@
 from gamecomponent import GameFieldComponent
 from turtle import TurtleScreen
+from gameover import GameOver
 
 
 FONT = ("Courier", 40, "bold")
@@ -23,7 +24,6 @@ class PongScore(GameFieldComponent):
 
     def increase_score(self, amount: int):
         self._score += amount
-        self.update_message()
 
     def update_message(self):
         self.clear()
@@ -31,6 +31,12 @@ class PongScore(GameFieldComponent):
 
     def step(self) -> None:
         self.update_message()
+        if self._score == 10:
+            print(f"Player {self._player} has won!")
+            raise GameOver('')
 
     def is_valid(self) -> bool:
         return True
+
+    def score(self) -> int:
+        return self._score

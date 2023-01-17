@@ -16,12 +16,26 @@ game.register_component('Ball', PongBall)
 game.components_init()
 game.register_action('Paddle A', 'w', 'move_up')
 game.register_action('Paddle B', 'Up', 'move_up')
-game.register_action('Paddle A', 's', 'some')
+game.register_action('Paddle A', 's', 'move_down')
 game.register_action('Paddle B', 'Down', 'move_down')
 
 while game.is_valid():
     game.step_through_components()
-    sleep(0.02)
+    if game.get_component_instance_by_name('Paddle A').detect_ball_collision(game.get_component_instance_by_name('Ball')):
+        print("Ball collision A")
+        game.get_component_instance_by_name('Ball').bounce_paddle()
+    if game.get_component_instance_by_name('Paddle B').detect_ball_collision(game.get_component_instance_by_name('Ball')):
+        print("Ball collision B")
+        game.get_component_instance_by_name('Ball').bounce_paddle()
+    exited = game.get_component_instance_by_name('Ball').exited_field()
+    if exited:
+        print(f"Ball exited the field and scored for {exited}.")
+        game.get_component_instance_by_name('Score ' + exited).increase_score(1)
+        game.update_screen()
+        game.reinitialize_component('Ball')
+        sleep(1)
+
+    sleep(0.01)
 game.screen.exitonclick()
 
 

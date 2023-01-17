@@ -1,8 +1,8 @@
-from gamecomponent import GameFieldComponent
 from turtle import Screen
 from typing import TypeVar, Type
-from gameover import GameOver
 
+from gamecomponent import GameFieldComponent
+from gameover import GameOver
 
 GFC = TypeVar('GFC', bound=GameFieldComponent)
 
@@ -25,21 +25,33 @@ class GameFieldContainer:
         if name in [c['name'] for c in self._components]:
             raise NameError(f"register_component: A component of this name has already been registered: {name}.")
         self._components.append({'name': name, 'class': component_class, 'args': component_init_kwargs})
+        print(f"\tRegistered '{name}': {component_class}.")
 
     def components_init(self):
         for component in self._components:
             if 'instance' in component.keys():
                 print(f"\tInitializing component '{component['name']}' skipped. Already initialized.")
             else:
-                component_args = component['args']
-                if len(component_args) == 0:
-                    print(f"\tInitializing component '{component['name']}': {component['class']} without arguments.")
-                    component['instance'] = component['class'](self.screen)
-                elif len(component_args) > 0:
-                    print(f"\tInitializing component '{component['name']}': {component['class']} with arguments: {component_args}.")
-                    component['instance'] = component['class'](self.screen, **component_args)
-                else:
-                    raise Exception("components_init has reached invalid state: number of arguments seems negative.")
+                self._comp_new_instance(component)
+
+    def _comp_new_instance(self, component):
+        component_args = component['args']
+        if len(component_args) == 0:
+            print(f"\tInitializing component '{component['name']}': {component['class']} without arguments.")
+            component['instance'] = component['class'](self.screen)
+        elif len(component_args) > 0:
+            print(
+                f"\tInitializing component '{component['name']}': {component['class']} with arguments: {component_args}.")
+            component['instance'] = component['class'](self.screen, **component_args)
+        else:
+            raise Exception("components_init has reached invalid state: number of arguments seems negative.")
+
+    def reinitialize_component(self, name: str) -> None:
+        if self.get_component_instance_by_name(name):
+            component = self._get_comp_dict_by_name(name)
+            component['instance'].hideturtle()
+            del component['instance']
+            self._comp_new_instance(component)
 
     def step_through_components(self):
         for component in self._components:
@@ -50,20 +62,26 @@ class GameFieldContainer:
                     self._is_valid = False
                     return
             else:
-                raise ReferenceError(f"step_through_components: Component'{component['name']}' has not been initialized.")
+                raise ReferenceError(f"step_through_components: Component '{component['name']}' references to unitialized object.")
             self.update_screen()
 
-    def get_component_by_name(self, component_name: str) -> GFC:
+    def get_component_instance_by_name(self, component_name: str) -> GFC:
         for component in self._components:
             if component['name'] == component_name:
                 try:
                     return component['instance']
                 except KeyError:
-                    raise KeyError(f"get_component_by_name: Component '{component_name}' has not been initialized.")
+                    raise KeyError(f"get_component_by_name: Component '{component_name}' references to unitialized object.")
         raise NameError(f"get_component_by_name: Component '{component_name}' not found.")
 
+    def _get_comp_dict_by_name(self, name: str):
+        for component in self._components:
+            if component['name'] == name:
+                return component
+        raise NameError(f"get_comp_dict_by_name: Component '{name}' not found.")
+
     def register_action(self, component_name: str, key_binding: str, method_name: str):
-        component = self.get_component_by_name(component_name)
+        component = self.get_component_instance_by_name(component_name)
         if hasattr(component, method_name):
             method = getattr(component, method_name)
             if callable(method):
