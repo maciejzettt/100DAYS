@@ -14,6 +14,7 @@ class Snake:
     _SCREEN_SIZE = 600
 
     def __init__(self, initial_num_segments: int, screen):
+        self._initial_num_segments = initial_num_segments
         self._snake_body = list[Turtle]()
         self._heading = 0
         self._stored_heading = 0
@@ -21,6 +22,15 @@ class Snake:
         self._screen = screen
         self._prepare_screen()
         self._initialize_segments(initial_num_segments)
+        self._head = self._snake_body[0]
+        self._screen.update()
+
+    def reset(self):
+        self._reset_snake_body()
+        self._heading = 0
+        self._stored_heading = 0
+        self._segments_count = 0
+        self._initialize_segments(self._initial_num_segments)
         self._head = self._snake_body[0]
         self._screen.update()
 
@@ -54,6 +64,11 @@ class Snake:
         self._screen.onkey(self._change_heading_right, 'Right')
         self._screen.onkey(self._change_heading_up, 'Up')
         self._screen.onkey(self._change_heading_down, 'Down')
+
+    def _reset_snake_body(self):
+        for segment in self._snake_body:
+            segment.hideturtle()
+        self._snake_body.clear()
 
     def loop_step(self) -> None:
         self._stored_heading = self._heading

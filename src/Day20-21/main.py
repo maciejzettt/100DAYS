@@ -12,15 +12,28 @@ food = Food()
 scoreboard = Scoreboard(280)
 scoreboard.increase_score(0)
 
-game_is_on = True
-while game_is_on:
-    snake.loop_step()
-    if snake.check_food_collision(food):
-        snake.add_new_segment()
-        scoreboard.increase_score(1)
-        food.refresh()
-    game_is_on = snake.not_colliding()
-    time.sleep(0.1)
-scoreboard.game_over_message()
+
+def do_game():
+
+    game_is_on = True
+    while game_is_on:
+        snake.loop_step()
+        if snake.check_food_collision(food):
+            snake.add_new_segment()
+            scoreboard.increase_score(1)
+            food.refresh()
+        game_is_on = snake.not_colliding()
+        time.sleep(0.1)
+    scoreboard.game_over_message()
+    time.sleep(1)
+    snake.reset()
+    scoreboard.reset()
+    time.sleep(1)
+
+
+screen.onkey(screen.bye, 'x')
+
+while True:
+    do_game()
 
 screen.exitonclick()
