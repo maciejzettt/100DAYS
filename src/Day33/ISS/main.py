@@ -10,7 +10,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 COMMON_FN_DICT = runpy.run_path(op.join(PROJECT_ROOT, "commonFunctions.py"))
 CREDENTIALS = COMMON_FN_DICT['email_credentials']()
 
-Timer = COMMON_FN_DICT['RepeatedTimer']
+Timer  = COMMON_FN_DICT['RepeatedTimer']
 
 
 MY_LAT = 51 # Your latitude
@@ -73,7 +73,7 @@ def loop_function() -> None:
     else:
         print("Message won't be sent: conditions not met")        
     
-loop = Timer(10, loop_function)    
+loop = Timer(600, loop_function)    
 print("Timer initialized.")
 #If the ISS is close to my current position
 # and it is currently dark
