@@ -8,6 +8,7 @@ load_dotenv(os.path.join(DIR, "auth.pwd"))
 
 TWILIO_SID = os.environ.get("TWILIO_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH")
+PHONE_NO = os.environ.get("PHONE_NO")
 
 OWM_ENDPOINT = "https://api.openweathermap.org/data/2.8/onecall"
 OWM_API_KEY = os.environ.get("OWM_KEY")
@@ -36,7 +37,7 @@ if True in rain_pattern_12h:
     sms_message = sms_client.messages.create(
         body="It will rain today. Take an umbrella.☂️",
         from_="+14344362030",
-        to="+48500412722"
+        to=PHONE_NO
     )
     
 else:
