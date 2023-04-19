@@ -1,3 +1,5 @@
 /venv/**
 
 **/*.pwd
+**/*-auth.py
+**/*_auth.py
