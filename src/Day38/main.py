@@ -30,7 +30,7 @@ exercise_data = exercise_data[0]
 print_dict.print_dict(exercise_data)
 
 sheety_hdr = {
-    "Authorization": "Bearer ffJdsjL73nsklkNKD93kdqp"
+    "Authorization": api_auth.SHEETY_AUTH
 }
 
 now = dt.datetime.now()
